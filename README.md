@@ -1,0 +1,40 @@
+# Jenkins FastAPI Demo
+
+Jenkins CI/CD Training on AWS Cloud
+
+## Application
+
+- Python
+- FastAPI
+- Uvicorn
+
+## API Endpoints
+
+- GET /
+- GET /health
+- GET /api/v1/add
+- GET /docs
+
+## Development Environment
+
+Create a Python virtual environment.
+
+    python3 -m venv .venv
+    source .venv/bin/activate
+
+Install dependencies.
+
+    python -m pip install -r requirements-dev.txt
+
+## Run Application
+
+    python -m uvicorn app:app --host 127.0.0.1 --port 8000
+
+## Run Tests
+
+    python -m pytest -v
+
+## Generate Test Report
+
+    mkdir -p reports
+    python -m pytest -v --junitxml=reports/junit.xml

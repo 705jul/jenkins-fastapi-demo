@@ -1,0 +1,24 @@
+# Python virtual environment
+.venv/
+venv/
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# pytest cache
+.pytest_cache/
+
+# Test reports and build artifacts
+reports/
+dist/
+*.egg-info/
+
+# Secrets
+.env
+.env.*
+*.pem
+
+# Editor files
+.vscode/
+.idea/
