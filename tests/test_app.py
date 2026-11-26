@@ -16,7 +16,7 @@ def test_root():
 
     assert response.json() == {
         "service": "jenkins-fastapi-demo",
-        "version": "1.0.1",
+        "version": "1.0.2",
     }
 
 
