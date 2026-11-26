@@ -38,3 +38,5 @@ Install dependencies.
 
     mkdir -p reports
     python -m pytest -v --junitxml=reports/junit.xml
+## Day 04 - Poll SCM
+Jenkins periodically checks GitHub for source code changes.
