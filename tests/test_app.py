@@ -16,7 +16,7 @@ def test_root():
 
     assert response.json() == {
         "service": "jenkins-fastapi-demo",
-        "version": "1.0.2",
+        "version": "1.1.0",
     }
 
 
@@ -69,3 +69,28 @@ def test_add_invalid_input():
     )
 
     assert response.status_code == 422
+
+@pytest.mark.parametrize(
+    "a,b,expected",
+    [
+        (4, 5, 20),
+        (-2, 3, -6),
+    ],
+)
+def test_multiply(a, b, expected):
+
+    response = client.get(
+        "/api/v1/multiply",
+        params={
+            "a": a,
+            "b": b,
+        },
+    )
+
+    assert response.status_code == 200
+
+    assert response.json() == {
+        "a": a,
+        "b": b,
+        "result": expected,
+    }

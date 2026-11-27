@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 
 
-APP_VERSION = "1.0.2"
+APP_VERSION = "1.1.0"
 
 
 app = FastAPI(
@@ -34,4 +34,13 @@ def add(a: int, b: int):
         "a": a,
         "b": b,
         "result": a + b,
+    }
+
+@app.get("/api/v1/multiply")
+def multiply(a: int, b: int):
+
+    return {
+        "a": a,
+        "b": b,
+        "result": a * b,
     }
