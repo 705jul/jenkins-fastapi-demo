@@ -36,7 +36,7 @@ pipeline {
         booleanParam(
             name: 'BUILD_PACKAGE',
             defaultValue: true,
-            description: 'Create ZIP package after successful tests'
+            description: 'Create ZIP package on main after successful tests'
         )
     }
 
@@ -56,6 +56,19 @@ pipeline {
 
                 checkout scm
 
+                script {
+
+                    env.CI_BRANCH = env.BRANCH_NAME ?: (
+                        env.JOB_NAME == 'day03-fastapi-pipeline'
+                            ? 'main'
+                            : 'unknown'
+                    )
+                }
+
+                echo "Current Branch: ${env.CI_BRANCH}"
+
+                echo "Build Number: ${env.BUILD_NUMBER}"
+
                 sh '''#!/bin/bash
 set -euo pipefail
 
@@ -64,6 +77,8 @@ echo "JOB_NAME=${JOB_NAME}"
 echo "BUILD_NUMBER=${BUILD_NUMBER}"
 
 echo "WORKSPACE=${WORKSPACE}"
+
+echo "CI_BRANCH=${CI_BRANCH}"
 
 echo "Current User:"
 whoami
@@ -126,7 +141,7 @@ set -euo pipefail
 
 mkdir -p reports
 
-echo "Run pytest"
+echo "Run pytest for ${CI_BRANCH}"
 
 "$PYTHON_BIN" -m pytest -v --junitxml="$REPORT_FILE"
 
@@ -164,8 +179,15 @@ ls -lh reports/
 
             when {
 
-                expression {
-                    return params.BUILD_PACKAGE
+                allOf {
+
+                    expression {
+                        return env.CI_BRANCH == 'main'
+                    }
+
+                    expression {
+                        return params.BUILD_PACKAGE
+                    }
                 }
             }
 
@@ -215,6 +237,7 @@ from app import APP_VERSION
 build_info = {
     "project": os.environ["PROJECT_NAME"],
     "application_version": APP_VERSION,
+    "git_branch": os.environ["CI_BRANCH"],
     "job_name": os.environ["JOB_NAME"],
     "build_number": os.environ["BUILD_NUMBER"],
     "git_commit": os.environ["SOURCE_COMMIT"],
@@ -269,7 +292,10 @@ ls -lh dist/
 
             script {
 
-                if (params.BUILD_PACKAGE) {
+                if (
+                    env.CI_BRANCH == 'main' &&
+                    params.BUILD_PACKAGE
+                ) {
 
                     archiveArtifacts(
                         artifacts: 'dist/*.zip,dist/build-info.json,reports/junit.xml',
@@ -311,6 +337,8 @@ ls -lh dist/
             echo "JOB_NAME: ${env.JOB_NAME}"
 
             echo "BUILD_NUMBER: ${env.BUILD_NUMBER}"
+
+            echo "GIT_BRANCH: ${env.CI_BRANCH ?: 'unknown'}"
 
             echo "FINAL RESULT: ${currentBuild.currentResult}"
         }
